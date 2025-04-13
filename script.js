@@ -1,63 +1,64 @@
-
-const calendarBody = document.getElementById("calendar-body");
-const monthYear = document.getElementById("month-year");
-const prevMonthBtn = document.getElementById("prev-month");
-const nextMonthBtn = document.getElementById("next-month");
-
-let currentDate = new Date();
-let trades = JSON.parse(localStorage.getItem("trades") || "{}");
-
-function generateCalendar(date) {
-    calendarBody.innerHTML = "";
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    monthYear.textContent = date.toLocaleDateString("it-IT", { month: "long", year: "numeric" });
-
-    let row = document.createElement("tr");
-    for (let i = 0; i < firstDay; i++) {
-        row.appendChild(document.createElement("td"));
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-        if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
-            calendarBody.appendChild(row);
-            row = document.createElement("tr");
-        }
-
-        const cell = document.createElement("td");
-        const fullDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-        cell.textContent = day;
-
-        if (trades[fullDate]) {
-            const type = trades[fullDate];
-            cell.style.backgroundColor = type === "positivo" ? "#a5f7a5" : "#f7a5a5";
-        }
-
-        cell.addEventListener("click", () => {
-            const tipo = prompt("Trade 'positivo' o 'negativo'?", trades[fullDate] || "");
-            if (tipo === "positivo" || tipo === "negativo") {
-                trades[fullDate] = tipo;
-                localStorage.setItem("trades", JSON.stringify(trades));
-                generateCalendar(currentDate);
-            }
-        });
-
-        row.appendChild(cell);
-    }
-    calendarBody.appendChild(row);
+// Funzione per memorizzare i dati in localStorage
+function saveData(date, value) {
+    let data = JSON.parse(localStorage.getItem('tradeData')) || {};
+    data[date] = value;
+    localStorage.setItem('tradeData', JSON.stringify(data));
 }
 
-prevMonthBtn.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    generateCalendar(currentDate);
+// Funzione per colorare la finestra in verde o rosso
+function colorCell(value, cell) {
+    if (value > 0) {
+        cell.style.backgroundColor = 'green'; // Verde per positivo
+    } else if (value < 0) {
+        cell.style.backgroundColor = 'red'; // Rosso per negativo
+    } else {
+        cell.style.backgroundColor = ''; // Rimuovi il colore se il valore è zero
+    }
+}
+
+// Funzione per caricare i dati e aggiornare l'interfaccia
+function loadData() {
+    const data = JSON.parse(localStorage.getItem('tradeData')) || {};
+    const cells = document.querySelectorAll('.day-cell'); // Assicurati di avere una classe 'day-cell' sulle celle del calendario
+
+    cells.forEach(cell => {
+        const date = cell.getAttribute('data-date'); // Usa un attributo 'data-date' per identificare ogni giorno
+        if (data[date]) {
+            const value = data[date];
+            cell.textContent = value;
+            colorCell(value, cell);
+        }
+    });
+}
+
+// Funzione per calcolare statistiche e totale
+function calculateStats() {
+    const data = JSON.parse(localStorage.getItem('tradeData')) || {};
+    let total = 0, positiveDays = 0, negativeDays = 0;
+
+    Object.values(data).forEach(value => {
+        total += value;
+        if (value > 0) positiveDays++;
+        else if (value < 0) negativeDays++;
+    });
+
+    document.getElementById('total').textContent = `Totale mese: ${total}`;
+    document.getElementById('positiveDays').textContent = `Giorni positivi: ${positiveDays}`;
+    document.getElementById('negativeDays').textContent = `Giorni negativi: ${negativeDays}`;
+}
+
+// Esegui il caricamento dei dati all'avvio
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    calculateStats();
 });
 
-nextMonthBtn.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    generateCalendar(currentDate);
+// Aggiungi un ascoltatore di eventi per salvare il dato quando viene inserito
+document.getElementById('saveButton').addEventListener('click', () => {
+    const date = document.getElementById('dateInput').value; // Assicurati di avere un input per la data
+    const value = parseFloat(document.getElementById('valueInput').value); // Assicurati di avere un input per il valore
+    if (isNaN(value)) return alert('Inserisci un valore valido!');
+    saveData(date, value);
+    loadData();
+    calculateStats();
 });
-
-generateCalendar(currentDate);
