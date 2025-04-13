@@ -1,34 +1,38 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Calendar</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trading Calendar</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="calendar-container">
-        <div class="navigation">
-            <button id="prev-month">Precedente</button>
-            <span id="month-year"></span>
-            <button id="next-month">Successivo</button>
-        </div>
-        <table id="calendar">
-            <thead>
-                <tr>
-                    <th>Dom</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Gio</th><th>Ven</th><th>Sab</th>
-                </tr>
-            </thead>
-            <tbody id="calendar-body"></tbody>
-        </table>
+  <div class="calendar-container">
+    <div class="navigation">
+      <button id="prev-month">&laquo; Precedente</button>
+      <span id="month-year"></span>
+      <button id="next-month">Successivo &raquo;</button>
     </div>
-    <script src="script.js"></script>
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>Dom</th>
+          <th>Lun</th>
+          <th>Mar</th>
+          <th>Mer</th>
+          <th>Gio</th>
+          <th>Ven</th>
+          <th>Sab</th>
+        </tr>
+      </thead>
+      <tbody id="calendar-body"></tbody>
+    </table>
+    <div class="stats">
+      <p id="total"></p>
+      <p id="positiveDays"></p>
+      <p id="negativeDays"></p>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
