@@ -1,0 +1,17 @@
+
+{
+  "name": "Trading Calendar",
+  "short_name": "Calendar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "Calendario per annotare i trade giornalieri",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#ffffff"
+}
